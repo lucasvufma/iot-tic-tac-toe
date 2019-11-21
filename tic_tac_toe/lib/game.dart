@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-var iotConnection = "IP Iot Connection";
-
-
+import 'globalUrl.dart' as globals;
+import 'httpRequest.dart' as http;
 
 class Game extends StatefulWidget {
   @override
@@ -11,7 +10,6 @@ class Game extends StatefulWidget {
 }
 
 class _HomePageState extends State<Game> {
-
   List<List> _matrix;
 
   _HomePageState() {
@@ -30,40 +28,46 @@ class _HomePageState extends State<Game> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildElement(0, 0),
-                _buildElement(0, 1),
-                _buildElement(0, 2),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildElement(1, 0),
-                _buildElement(1, 1),
-                _buildElement(1, 2),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildElement(2, 0),
-                _buildElement(2, 1),
-                _buildElement(2, 2),
-              ],
-            ),
-          ],
+        body: Center(
+      child: Container(
+        width: 300.0,
+        height: 380.0,
+        child: Material(
+          elevation: 20.0,
+          shadowColor: Colors.blue,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildElement(0, 0),
+                  _buildElement(0, 1),
+                  _buildElement(0, 2),
+                ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildElement(1, 0),
+                  _buildElement(1, 1),
+                  _buildElement(1, 2),
+                ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildElement(2, 0),
+                  _buildElement(2, 1),
+                  _buildElement(2, 2),
+                ],
+              ),
+            ],
+          ),
         ),
-      )
-    );
+      ),
+    ));
   }
 
   String _lastChar = 'o';
@@ -77,17 +81,11 @@ class _HomePageState extends State<Game> {
       child: Container(
         width: 90.0,
         decoration: BoxDecoration(
-          shape: BoxShape.rectangle,
-          border: Border.all(
-            color: Colors.black
-          )
-        ),
+            shape: BoxShape.rectangle, border: Border.all(color: Colors.black)),
         child: Center(
           child: Text(
             _matrix[i][j],
-            style: TextStyle(
-              fontSize: 92.0
-            ),
+            style: TextStyle(fontSize: 92.0),
           ),
         ),
       ),
@@ -99,7 +97,6 @@ class _HomePageState extends State<Game> {
       if (_matrix[i][j] == ' ') {
         if (_lastChar == 'O')
           _matrix[i][j] = 'X';
-
         else
           _matrix[i][j] = 'O';
 
@@ -110,22 +107,19 @@ class _HomePageState extends State<Game> {
 
   _checkWinner(int x, int y) {
     var col = 0, row = 0, diag = 0, rdiag = 0;
-    var n = _matrix.length-1;
+    var n = _matrix.length - 1;
     var player = _matrix[x][y];
 
     for (int i = 0; i < _matrix.length; i++) {
-      if (_matrix[x][i] == player)
-        col++;
-      if (_matrix[i][y] == player)
-        row++;
-      if (_matrix[i][i] == player)
-        diag++;
-      if (_matrix[i][n-i] == player)
-        rdiag++;
+      if (_matrix[x][i] == player) col++;
+      if (_matrix[i][y] == player) row++;
+      if (_matrix[i][i] == player) diag++;
+      if (_matrix[i][n - i] == player) rdiag++;
     }
-    if (row == n+1 || col == n+1 || diag == n+1 || rdiag == n+1) {
-      print('$player won');
-      print(iotConnection);
+    if (row == n + 1 || col == n + 1 || diag == n + 1 || rdiag == n + 1) {
+      var winner = 'P$player';
+      http.postRequest(winner, globals.url);
+
       _initMatrix();
     }
   }
