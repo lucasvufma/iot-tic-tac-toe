@@ -77,6 +77,7 @@ class _HomePageState extends State<Game> {
       onTap: () {
         _changeMatrixField(i, j);
         _checkWinner(i, j);
+        _checkComplete(i, j);
       },
       child: Container(
         width: 90.0,
@@ -105,6 +106,21 @@ class _HomePageState extends State<Game> {
     });
   }
 
+  _checkComplete(int x, int y) {
+    var counter = 0;
+    for (var i = 0; i < _matrix.length; i++) {
+      for (var j = 0; j < _matrix[i].length; j++) {
+        if ((_matrix[i][j] == 'X' || _matrix[i][j] == 'O')) {
+          counter++;
+        }
+      }
+    }
+    print(counter);
+    if (counter == 9) {
+      _initMatrix();
+    }
+  }
+
   _checkWinner(int x, int y) {
     var col = 0, row = 0, diag = 0, rdiag = 0;
     var n = _matrix.length - 1;
@@ -117,10 +133,18 @@ class _HomePageState extends State<Game> {
       if (_matrix[i][n - i] == player) rdiag++;
     }
     if (row == n + 1 || col == n + 1 || diag == n + 1 || rdiag == n + 1) {
-      var winner = 'P$player';
-      http.postRequest(winner, globals.url);
-
-      _initMatrix();
+      var winner;
+      if (player == 'X') {
+        winner = 'P1';
+        print(winner);
+        http.postRequest(winner, globals.url);
+        _initMatrix();
+      } else {
+        winner = 'P0';
+        print(winner);
+        http.postRequest(winner, globals.url);
+        _initMatrix();
+      }
     }
   }
 }
