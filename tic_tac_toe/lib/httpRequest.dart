@@ -12,13 +12,14 @@ Future<http.Response> postRequest (data,url) async {
   //encode Map to JSON
   var body = json.encode(map);
   
+  print('$body');
 
   var response = await http.post(url,
       headers: {"Content-Type": "application/json"},
       body: body
   );
   print('$map');
-  print("${response.statusCode}");
-  print("${response.body}");
+  //print("${response.statusCode}");
+  //print("${response.body}");
   return response;
 }
